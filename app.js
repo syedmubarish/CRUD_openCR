@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 const Product = require("./models/products");
 
@@ -17,10 +18,11 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+
+
+
 mongoose
-  .connect(
-    "mongodb+srv://mubarish007:tmkptkbThuWpgjtw@cluster0.o0g4mt8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Succesfully connected to mongoAtlas");
   })
@@ -76,24 +78,23 @@ app.put("/api/products/:id", (req, res, next) => {
     inStock: req.body.inStock,
   });
 
-  Product.updateOne({_id:req.params.id},newProduct)
-  .then(()=>{
-    res.status(200).json({ message: 'Modified!' })
-  })
-  .catch((error)=>{
-    res.status(404).json({error})
-  })
+  Product.updateOne({ _id: req.params.id }, newProduct)
+    .then(() => {
+      res.status(200).json({ message: "Modified!" });
+    })
+    .catch((error) => {
+      res.status(404).json({ error });
+    });
 });
 
-
-app.delete("/api/products/:id",(req,res)=>{
-    Product.deleteOne({_id:req.params.id})
-    .then(()=>{
-        res.status(200).json({ message: 'Deleted!' })
+app.delete("/api/products/:id", (req, res) => {
+  Product.deleteOne({ _id: req.params.id })
+    .then(() => {
+      res.status(200).json({ message: "Deleted!" });
     })
-    .catch((error)=>{
-        res.status(404).json({message:"Not found"})
-    })
-})
+    .catch((error) => {
+      res.status(404).json({ message: "Not found" });
+    });
+});
 
 module.exports = app;
